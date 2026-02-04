@@ -1,4 +1,4 @@
-# AI Curriculum Generator + Evaluator (V2 FULL)
+# AI Assignment Generator + Evaluator
 
 This is a Curriculum Engineer aligned MVP project:
 
