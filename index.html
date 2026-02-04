@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>AI Curriculum Evaluator</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to right, #f5f7fa, #c3cfe2);
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background: linear-gradient(to right, #4facfe, #00f2fe);
+      padding: 20px;
+      text-align: center;
+      color: white;
+      font-size: 26px;
+      font-weight: bold;
+    }
+
+    .container {
+      width: 85%;
+      margin: 30px auto;
+    }
+
+    .card {
+      background: white;
+      padding: 20px;
+      margin-bottom: 25px;
+      border-radius: 15px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    }
+
+    select, button, textarea {
+      width: 100%;
+      margin-top: 10px;
+      padding: 12px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      font-size: 15px;
+    }
+
+    button {
+      background: #4facfe;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    button:hover {
+      background: #007bff;
+    }
+
+    textarea {
+      resize: none;
+    }
+
+    pre {
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 10px;
+      white-space: pre-wrap;
+      font-size: 14px;
+    }
+
+    .result-box {
+      padding: 15px;
+      border-radius: 12px;
+      font-size: 16px;
+    }
+
+    .success {
+      background: #d4edda;
+      color: #155724;
+      border-left: 6px solid #28a745;
+    }
+
+    .fail {
+      background: #f8d7da;
+      color: #721c24;
+      border-left: 6px solid #dc3545;
+    }
+
+    .partial {
+      background: #fff3cd;
+      color: #856404;
+      border-left: 6px solid #ffc107;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>🚀 AI Assignment Evaluator Platform</header>
+
+<div class="container">
+
+  <!-- Topic Selection -->
+  <div class="card">
+    <h3>Select Topic</h3>
+    <select id="topic">
+      <option>SQL</option>
+      <option>Python Data Cleaning</option>
+    </select>
+
+    <button id="genBtn">✨ Generate Assignment</button>
+  </div>
+
+  <!-- Assignment -->
+  <div class="card">
+    <h3>📌 Assignment</h3>
+    <pre id="assign">Click "Generate Assignment" to begin...</pre>
+  </div>
+
+  <!-- Expected Steps -->
+  <div class="card">
+    <h3>✅ Expected Steps</h3>
+    <pre id="rubricBox">Rubric steps will appear here...</pre>
+  </div>
+
+  <!-- Answer Box -->
+  <div class="card">
+    <h3>📝 Submit Your Answer</h3>
+    <textarea id="answerBox" rows="8"
+      placeholder="Write your SQL query or Python solution here..."></textarea>
+
+    <button id="evalBtn">🎯 Evaluate Answer</button>
+  </div>
+
+  <!-- Result -->
+  <div class="card">
+    <h3>📊 Evaluation Result</h3>
+    <div id="result" class="result-box">No evaluation yet.</div>
+  </div>
+
+</div>
+
+
+<script>
+  // ✅ Generate Assignment
+  document.getElementById("genBtn").onclick = async function () {
+
+    let topic = document.getElementById("topic").value;
+
+    let res = await fetch("/generate", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({topic: topic})
+    });
+
+    let data = await res.json();
+
+    document.getElementById("assign").innerText = data.assignment;
+
+    document.getElementById("rubricBox").innerText =
+      data.rubric.map((x, i) => `${i+1}. ${x}`).join("\n");
+
+    document.getElementById("answerBox").value = "";
+
+    document.getElementById("result").innerHTML =
+      "✅ Assignment Generated. Submit your answer!";
+    document.getElementById("result").className = "result-box partial";
+  };
+
+
+  // ✅ Evaluate Answer
+  document.getElementById("evalBtn").onclick = async function () {
+
+    let answer = document.getElementById("answerBox").value;
+
+    let res = await fetch("/evaluate", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({answer: answer})
+    });
+
+    let data = await res.json();
+
+    // ✅ Show result cleanly
+    let statusClass = "partial";
+
+    if (data.status === "success") statusClass = "success";
+    if (data.status === "fail") statusClass = "fail";
+
+    document.getElementById("result").className = "result-box " + statusClass;
+
+    document.getElementById("result").innerHTML = `
+      <b>Status:</b> ${data.status.toUpperCase()} <br><br>
+      <b>Score:</b> ${data.score}/10 <br><br>
+      <b>Feedback:</b> ${data.feedback || "No feedback"} <br><br>
+      ${data.missing ? "<b>Missing:</b><br> - " + data.missing.join("<br> - ") : ""}
+    `;
+  };
+</script>
+
+</body>
+</html>

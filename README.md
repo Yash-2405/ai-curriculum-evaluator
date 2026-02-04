@@ -1,9 +1,9 @@
-# AI Assignment Generator + Evaluator
+# AI Curriculum Generator + Evaluator (V2 FULL)
 
 This is a Curriculum Engineer aligned MVP project:
 
-✅ Dynamic assignment generation using **GROK API**  
-✅ Topics: SQL, Python + Data Cleaning  
+✅ Dynamic assignment generation using **Gemini Free API**  
+✅ Topics: SQL, Python, ETL, GenAI  
 ✅ SQL Evaluation Agent with scoring + feedback  
 ✅ Tool execution using SQLite  
 
@@ -22,7 +22,7 @@ Open `generator.py`
 Replace:
 
 ```python
-GROK_API_KEY = "PASTE_YOUR_KEY_HERE"
+GEMINI_API_KEY = "PASTE_YOUR_KEY_HERE"
 ```
 
 ### 3. Run Server
@@ -30,19 +30,13 @@ GROK_API_KEY = "PASTE_YOUR_KEY_HERE"
 python app.py
 ```
 
+Open browser:
+
+http://127.0.0.1:5000
+
 ---
 
 ## Demo Flow
 1. Select topic → Generate Assignment  
 2. If SQL topic → Write query → Evaluate  
 3. Get score + feedback instantly
-
----
-
-## Future Scope
-
-1. Support for ETL + GenAI workflows
-
-2. Secure Python code execution sandbox
-
-3. Adaptive rubric extraction
